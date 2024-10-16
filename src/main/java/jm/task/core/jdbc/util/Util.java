@@ -1,5 +1,10 @@
 package jm.task.core.jdbc.util;
 
+import jm.task.core.jdbc.model.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -28,15 +33,21 @@ public class Util {
 
 
             conn = DriverManager.getConnection(url, username, password);
-            DatabaseMetaData meta = conn.getMetaData();
-            String name = meta.getDatabaseProductName();
-            String version = meta.getDatabaseProductVersion();
-            System.out.println(name + " " + version);
+//            проверка соединения
+//            DatabaseMetaData meta = conn.getMetaData();
+//            String name = meta.getDatabaseProductName();
+//            String version = meta.getDatabaseProductVersion();
+//            System.out.println(name + " " + version);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return conn;
     }
+
+    public static Session getSession() {
+
+        Configuration conf = new Configuration().addAnnotatedClass(User.class);
+        SessionFactory sessionFactory = conf.buildSessionFactory();
+        return sessionFactory.openSession();
+    }
 }
-
-
