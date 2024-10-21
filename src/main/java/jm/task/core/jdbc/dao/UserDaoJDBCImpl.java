@@ -11,23 +11,14 @@ public class UserDaoJDBCImpl implements UserDao {
     private static final Connection conn = Util.getConnection();
 
     public UserDaoJDBCImpl() {
-
     }
 
     public void createUsersTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS users (" +
-                "id BIGSERIAL PRIMARY KEY, " +
-                "name VARCHAR(20) NOT NULL, " +
-                "last_name VARCHAR(30) NOT NULL," +
-                "age SMALLINT);";
-        String print = "Table created";
-        updateStatement(sql, print);
+        createDropCleanTable(UserDao.SQL_CREATE, UserDao.PRINT_CREATE);
     }
 
     public void dropUsersTable() {
-        String sql = "DROP TABLE IF EXISTS users;";
-        String print = "Table dropped";
-        updateStatement(sql, print);
+        createDropCleanTable(UserDao.SQL_DROP, UserDao.PRINT_DROP);
     }
 
     public void saveUser(String name, String lastName, byte age) {
@@ -73,15 +64,10 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try {
-            PreparedStatement ps = conn.prepareStatement("TRUNCATE TABLE users RESTART IDENTITY");
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        createDropCleanTable(UserDao.SQL_TRUNCATE, UserDao.PRINT_TRUNCATE);
     }
 
-    private static void updateStatement(String sql, String print) {
+    private static void createDropCleanTable(String sql, String print) {
         try {
             Statement statement = conn.createStatement();
             statement.executeUpdate(sql);
